@@ -1,5 +1,3 @@
-use std::os::windows;
-
 use crate::Terminal;
 use termion::event::Key;
 
@@ -60,15 +58,24 @@ impl Editor {
         Ok(())
     }
 
+    fn draw_welcome_message(&self) {
+        let mut welcome_message = format!("Schreiber -- version {}", VERSION);
+        let width = self.terminal.size().width as usize;
+        let len = welcome_message.len();
+        let padding = width.saturating_add(len)/2;
+        let spaces = " ".repeat(padding.saturating_sub(1));
+        welcome_message = format!("~{}{}", spaces, welcome_message);
+        welcome_message.truncate(width);
+        println!("{}\r", welcome_message);
+    }
+
     fn draw_rows(&self) {
         // for _ in 0..self.terminal.size().height - 1  {
         let height = self.terminal.size().height;
         for row in 0..height - 1 {
             Terminal::clear_current_line();
             if row  == height / 3 {
-                let welcome_message = format!("Schreiber editor -- version {}", VERSION);
-                let width = std::cmp::min(self.terminal.size().width as usize, welcome_message.len());
-                println!("{}\r", &welcome_message[..width])
+                self.draw_welcome_message();
             } else {
                 println!("~\r");
             }
@@ -78,5 +85,5 @@ impl Editor {
 
 fn die(e: &std::io::Error) {
     Terminal::clear_screen();
-    panic!("{e}");
+    panic!("{}", e);
 }
