@@ -3,6 +3,7 @@ use std::io::{self, stdout, Write};
 use termion::event::Key;
 use termion::input::TermRead;
 use termion::raw::{IntoRawMode, RawTerminal};
+extern crate sys;
 
 pub struct Size {
     pub width: u16,
