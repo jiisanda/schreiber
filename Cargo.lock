@@ -167,8 +167,8 @@ name = "schreiber"
 version = "0.1.0"
 dependencies = [
  "crossterm",
- "sys",
  "termion",
+ "unicode-segmentation",
 ]
 
 [[package]]
@@ -204,12 +204,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "4dccd0940a2dcdf68d092b8cbab7dc0ad8fa938bf95787e1b916b0e3d0e8e970"
 
 [[package]]
-name = "sys"
-version = "0.0.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "e788d0b8692abbe8b3818a8b132e081438264f285170188cb214a5b790c37ea1"
-
-[[package]]
 name = "termion"
 version = "2.0.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -220,6 +214,12 @@ dependencies = [
  "redox_syscall",
  "redox_termios",
 ]
+
+[[package]]
+name = "unicode-segmentation"
+version = "1.10.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "1dd624098567895118886609431a7c3b8f516e41d30e0643f03d94592a147e36"
 
 [[package]]
 name = "winapi"
