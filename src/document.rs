@@ -1,6 +1,7 @@
 use crate::Position;
 use crate::Row;
 use std::fs;
+use std::io::{Error, Write};
 
 #[derive(Default)]
 pub struct Document {
@@ -9,7 +10,7 @@ pub struct Document {
 }
 
 impl Document {
-    pub fn open(filename: &str) -> Result<Self, std::io::Error> {
+    pub fn open(filename: &str) -> Result<Self, Error> {
         let contents = fs::read_to_string(filename)?;
         let mut rows = Vec::new();
         for value in contents.lines() {
@@ -74,5 +75,16 @@ impl Document {
             let row = self.rows.get_mut(at.y).unwrap();
             row.delete(at.x);
         }
+    }
+
+    pub fn save(&self) -> Result<(), Error> {
+        if let Some(file_name) = &self.file_name {
+            let mut file = fs::File::create(file_name)?;
+            for row in &self.rows {
+                file.write_all(row.as_bytes())?;
+                file.write_all(b"\n")?;
+            }
+        }
+        Ok(())
     }
 }

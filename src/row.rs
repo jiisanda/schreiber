@@ -1,5 +1,4 @@
 use std::cmp;
-use std::fmt::format;
 use unicode_segmentation::UnicodeSegmentation;
 
 #[derive(Default)]
@@ -84,5 +83,9 @@ impl Row {
         self.string = beginning;
         self.update_len();
         Self::from(&remainder[..])
+    }
+
+    pub fn as_bytes(&self) -> &[u8] {
+        self.string.as_bytes()
     }
 }
