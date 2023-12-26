@@ -17,6 +17,7 @@ impl From<&str> for Row {
         row
     }
 }
+
 impl Row {
     pub fn render(&self, start: usize, end: usize) -> String {
         let end = cmp::min(end, self.string.len());
@@ -71,8 +72,7 @@ impl Row {
         }
         self.update_len();
     }
-
-    pub fn append(&mut self, new: &self) {
+    pub fn append(&mut self, new: &Self) {
         self.string = format!("{}{}", self.string, new.string);
         self.update_len();
     }

@@ -47,13 +47,13 @@ impl Editor {
 
         loop {
             if let Err(error) = self.refresh_screen() {
-                die(&error);
+                die(error);
             }
             if self.should_quit {
                 break;
             }
             if let Err(error) = self.process_keypress() {
-                die(&error);
+                die(error);
             }
         }
     }
@@ -63,12 +63,11 @@ impl Editor {
         let mut initial_status = String::from("HELP: Ctrl-S = save | Ctrl-Q = quit");
         let document = if args.len() > 1 {
             let file_name = &args[1];
-            // Document::open(&file_name).unwrap_or_default()
-            let doc = Document::open(file_name);
+            let doc = Document::open(&file_name);
             if doc.is_ok() {
                 doc.unwrap()
             } else {
-                initial_status = format!("ERR: Could not open the file {}", file_name);
+                initial_status = format!("ERR: Could not open file: {}", file_name);
                 Document::default()
             }
         } else {
@@ -87,8 +86,6 @@ impl Editor {
     }
 
     fn refresh_screen(&self) -> Result<(), std::io::Error> {
-        // print!("\x1b[2J");
-        // print!("{}{}", termion::clear::All, termion::cursor::Goto(1, 1));
         Terminal::cursor_hide();
         Terminal::cursor_position(&Position::default());
         if self.should_quit {
@@ -140,7 +137,7 @@ impl Editor {
                 self.should_quit = true
             }
             Key::Ctrl('s') => self.save(),
-            Key::Ctrl(c) => {
+            Key::Char(c) => {
                 self.document.insert(&self.cursor_position, c);
                 self.move_cursor(Key::Right);
             }
@@ -170,10 +167,10 @@ impl Editor {
     }
 
     fn scroll(&mut self) {
-        let Position {x, y} = self.cursor_position;
+        let Position { x, y } = self.cursor_position;
         let width = self.terminal.size().width as usize;
         let height = self.terminal.size().height as usize;
-        let mut offset = &mut self.offset;
+        let offset = &mut self.offset;
 
         if y < offset.y {
             offset.y = y;
@@ -191,7 +188,7 @@ impl Editor {
         let terminal_height = self.terminal.size().height as usize;
         let Position { mut y, mut x } = self.cursor_position;
         let height = self.document.len();
-        let mut width = if let Some(row) = self.document.rows(y) {
+        let mut width = if let Some(row) = self.document.row(y) {
             row.len()
         } else {
             0
@@ -254,7 +251,7 @@ impl Editor {
     }
 
     fn draw_welcome_message(&self) {
-        let mut welcome_message = format!("Schreiber -- version {}", VERSION);
+        let mut welcome_message = format!("Hecto editor -- version {}", VERSION);
         let width = self.terminal.size().width as usize;
         let len = welcome_message.len();
         let padding = width.saturating_add(len)/2;
@@ -269,7 +266,7 @@ impl Editor {
         let start = self.offset.x;
         let end = self.offset.x + width;
         let row = row.render(start, end);
-        println!("{}\r", row);
+        println!("{}\r", row)
     }
 
     fn draw_rows(&self) {
@@ -295,6 +292,7 @@ impl Editor {
         } else {
             ""
         };
+
         let mut file_name = "[No Name]".to_string();
         if let Some(name) = &self.document.file_name {
             file_name = name.clone();
@@ -311,7 +309,7 @@ impl Editor {
         let line_indicator = format!(
             "{}/{}",
             self.cursor_position.y.saturating_add(1),
-            self.document.len();
+            self.document.len()
         );
         let len = status.len() + line_indicator.len();
         if width > len {
@@ -369,7 +367,7 @@ impl Editor {
     }
 }
 
-fn die(e: &std::io::Error) {
+fn die(e: std::io::Error) {
     Terminal::clear_screen();
     panic!("{}", e);
 }

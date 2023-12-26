@@ -23,7 +23,8 @@ impl Document {
             dirty: false,
         })
     }
-    pub fn rows(&self, index: usize) -> Option<&Row> {
+
+    pub fn row(&self, index: usize) -> Option<&Row> {
         self.rows.get(index)
     }
 
@@ -59,7 +60,7 @@ impl Document {
             self.rows.push(row);
         } else {
             let row = self.rows.get_mut(at.y).unwrap();
-            row.insert(at.y, c);
+            row.insert(at.x, c);
         }
     }
 
