@@ -273,12 +273,22 @@ impl Editor {
         // let spaces = " ".repeat(self.terminal.size().width as usize);
         let mut status;
         let width = self.terminal.size().width as usize;
+        let modified_indicator = if self.document.is_dirty() {
+            " (modified)"
+        } else {
+            ""
+        };
         let mut file_name = "[No Name]".to_string();
         if let Some(name) = &self.document.file_name {
             file_name = name.clone();
             file_name.truncate(20);
         }
-        status = format!("{} - {} lines", file_name, self.document.len());
+        status = format!(
+            "{} - {} lines{}",
+            file_name,
+            self.document.len(),
+            modified_indicator
+        );
         // if width > status.len() {
         //     status.push_str(&" ".repeat(width - status.len()));
         let line_indicator = format!(
